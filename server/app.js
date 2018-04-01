@@ -3,10 +3,8 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
-const dbPath = __dirname + '/db/movieRatings.db';
-// const db = new sqlite3.Database('dbPath');
 
-var db = new sqlite3.Database(dbPath, (err) => {
+var db = new sqlite3.Database(__dirname + '/db/movieRatings.db', (err) => {
   if (err) {
     return console.error(err.message);
   }
