@@ -142,9 +142,17 @@ export default class BatteryLog extends Component {
               {this.state.movies.map((movie,index) => {
                 if (index >= this.state.firstRow && index <= this.state.lastRow) {
                   var movie_ratings = []
+                  var max_rating = 0;
+                  var min_rating = 5;
                   this.state.ratings.map((rating,index) => {
                     if (rating.MovieID === movie.MovieID) {
                       movie_ratings.push(rating.Rating)
+                    }
+                    if (rating.Rating > max_rating) {
+                      max_rating = rating.Rating;
+                    }
+                    if (rating.Rating < min_rating) {
+                      min_rating = rating.Rating;
                     }
                     return movie_ratings;
                   })
@@ -159,6 +167,9 @@ export default class BatteryLog extends Component {
                       <td>{movie.Title}</td>
                       <td>{movie.Genre}</td>
                       <td>{avg_rating.toFixed(1)}</td>
+                      <td>{max_rating}</td>
+                      <td>{min_rating}</td>
+                      <td>{movie_ratings.length}</td>
                     </tr>
                   )
                 }
