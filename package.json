@@ -20,7 +20,7 @@
     "sqlite3": "^4.0.0"
   },
   "scripts": {
-    "start": "react-scripts start & nodemon --watch server/ server/app",
+    "start": "react-scripts start & nodemon --watch server/ server/bin/www",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
