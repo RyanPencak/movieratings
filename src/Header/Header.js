@@ -5,7 +5,7 @@ export default class Header extends Component {
   render() {
     return (
         <div className="Header">
-          <h1>Battery Diagnostics Interface</h1>
+          <h1>Movie Rating Database</h1>
         </div>
     );
   }
