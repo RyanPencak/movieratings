@@ -25,6 +25,17 @@ app.get('/api/users', function(req, res){
   });
 });
 
+app.get('/api/ratings', function(req, res){
+  let sql = `SELECT DISTINCT rating_id as RatingID, user_id as UserID, movie_id as MovieID, rating as Rating FROM ratings`;
+
+  db.all(sql, [], (err, users) => {
+    if (err) {
+      throw err;
+    }
+    res.json(users);
+  });
+});
+
 app.get('/api/movies', function(req, res){
   let sql = `SELECT DISTINCT movie_id as MovieID, title as Title, genre as Genre FROM movies`;
 

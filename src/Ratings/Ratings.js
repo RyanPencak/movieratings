@@ -11,6 +11,7 @@ export default class BatteryLog extends Component {
     this.state = {
       movies: [],
       users: [],
+      ratings: [],
       pageCounter: 1,
       firstRow: 0,
       lastRow: 9,
@@ -30,7 +31,7 @@ export default class BatteryLog extends Component {
   getData() {
     axios.get('/api/movies')
       .then(({data}) => {
-        console.log(data);
+        // console.log(data);
         this.setState({
           movies: data
         });
@@ -40,9 +41,19 @@ export default class BatteryLog extends Component {
       });
     axios.get('/api/users')
       .then(({data}) => {
-        console.log(data);
+        // console.log(data);
         this.setState({
           users: data
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    axios.get('/api/ratings')
+      .then(({data}) => {
+        console.log(data);
+        this.setState({
+          ratings: data
         });
       })
       .catch(err => {
@@ -86,8 +97,8 @@ export default class BatteryLog extends Component {
 
   lastPage() {
 
-    let currentPage = Math.ceil(this.state.batteryData.length / 10);
-    let endRow = this.state.batteryData.length;
+    let currentPage = Math.ceil(this.state.movies.length / 10);
+    let endRow = this.state.movies.length;
     endRow -= 1;
     let startRow = 0;
 
@@ -111,7 +122,7 @@ export default class BatteryLog extends Component {
       <div className="Ratings">
 
         <div className="header">
-          <h3>Ratings</h3>
+          <h3>Movies</h3>
         </div>
 
         <div className="bootstrapTable">
@@ -130,11 +141,24 @@ export default class BatteryLog extends Component {
             <tbody>
               {this.state.movies.map((movie,index) => {
                 if (index >= this.state.firstRow && index <= this.state.lastRow) {
+                  var movie_ratings = []
+                  this.state.ratings.map((rating,index) => {
+                    if (rating.MovieID === movie.MovieID) {
+                      movie_ratings.push(rating.Rating)
+                    }
+                    return movie_ratings;
+                  })
+                  var sum = 0;
+                  for (let i=0; i<movie_ratings.length; i++) {
+                    sum += movie_ratings[i];
+                  }
+                  var avg_rating = (sum/movie_ratings.length);
                   return (
-                    <tr key={movie.MovieID}>
+                    <tr key={index}>
                       <td>{movie.MovieID}</td>
                       <td>{movie.Title}</td>
                       <td>{movie.Genre}</td>
+                      <td>{avg_rating.toFixed(1)}</td>
                     </tr>
                   )
                 }
@@ -149,6 +173,7 @@ export default class BatteryLog extends Component {
             <Pagination.Next onClick={() => {this.incrementPage()}} />
             <Pagination.Last onClick={() => {this.lastPage()}} />
           </Pagination>
+
         </div>
 
       </div>
