@@ -1,0 +1,28 @@
+{
+  "name": "movieratings",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "9.4.0"
+  },
+  "proxy": "http://localhost:3001",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "my-sql": "^1.2.15",
+    "node": "^9.10.0",
+    "nodemon": "^1.17.2",
+    "react": "^16.3.0",
+    "react-bootstrap": "^0.32.1",
+    "react-dom": "^16.3.0",
+    "react-scripts": "1.1.1",
+    "sqlite3": "^4.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start & nodemon --watch server/ server/app",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
