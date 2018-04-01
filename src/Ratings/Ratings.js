@@ -122,7 +122,7 @@ export default class BatteryLog extends Component {
       <div className="Ratings">
 
         <div className="header">
-          <h3>Movies</h3>
+          <h3>Movie</h3>
         </div>
 
         <div className="bootstrapTable">
