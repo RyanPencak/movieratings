@@ -28,11 +28,22 @@ app.get('/api/users', function(req, res){
 app.get('/api/ratings', function(req, res){
   let sql = `SELECT DISTINCT rating_id as RatingID, user_id as UserID, movie_id as MovieID, rating as Rating FROM ratings`;
 
-  db.all(sql, [], (err, users) => {
+  db.all(sql, [], (err, ratings) => {
     if (err) {
       throw err;
     }
-    res.json(users);
+    res.json(ratings);
+  });
+});
+
+app.get('/api/tags', function(req, res){
+  let sql = `SELECT DISTINCT tag_id as TagID, rating_id as RatingID, movie_id as MovieID, tag_string as Tag FROM tags`;
+
+  db.all(sql, [], (err, tags) => {
+    if (err) {
+      throw err;
+    }
+    res.json(tags);
   });
 });
 

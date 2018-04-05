@@ -1,0 +1,13 @@
+.MovieReviews {
+  height: 800px;
+}
+
+/* .MovieReviews .header {
+  display: flex;
+  flex-direction: row;
+} */
+
+.MovieReviews .header .btn-default {
+  align-items: flex-end;
+  justify-content: center;
+}

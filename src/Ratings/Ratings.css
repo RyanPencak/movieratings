@@ -1,0 +1,43 @@
+.Ratings .scoreboard {
+  display: flex;
+  flex-direction: row;
+}
+
+.Ratings .scoreboard .counter {
+  margin: auto
+}
+
+.Ratings .scoreboard .counter p {
+  text-align: center;
+}
+
+.Ratings .movieSearch {
+  display: flex;
+  flex-direction: row;
+}
+
+.Ratings .userSearch {
+  display: flex;
+  flex-direction: row;
+}
+
+.Ratings .formContainer .btn-default {
+  width: 100%
+}
+
+.Ratings .formDropdown .btn-default {
+  margin: 20px 0 20px 0;
+  width: 100%;
+}
+
+.Ratings .userContainer .btn-default {
+  width: 100%
+}
+
+.Ratings .userDropdown .btn-default {
+  width: 100%;
+}
+
+.Ratings .userDropdown b {
+  font-size: 25;
+}
