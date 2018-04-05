@@ -61,6 +61,17 @@ app.get('/api/movies', function(req, res){
   });
 });
 
+// app.post('/api/ratings', function(req, res){
+//   let sql = `SELECT DISTINCT rating_id as RatingID, user_id as UserID, movie_id as MovieID, rating as Rating FROM ratings`;
+//
+//   db.all(sql, [], (err, ratings) => {
+//     if (err) {
+//       throw err;
+//     }
+//     res.json(ratings);
+//   });
+// });
+
 // app.post('/data', function(req, res){
 //     db.run("UPDATE counts SET value = value + 1 WHERE key = ?", "counter", function(err, row){
 //         if (err){

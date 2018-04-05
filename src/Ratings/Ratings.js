@@ -1,7 +1,7 @@
 import './Ratings.css';
 import MovieReviews from '../MovieReviews/MovieReviews.js'
 import React, { Component } from 'react';
-import { Table, Pagination, Glyphicon, Button } from 'react-bootstrap';
+import { Table, Pagination, Glyphicon, Button, Form, FormGroup, FormControl, ControlLabel, Col } from 'react-bootstrap';
 import axios from 'axios';
 
 export default class BatteryLog extends Component {
@@ -60,6 +60,8 @@ export default class BatteryLog extends Component {
     this.disableReviewDisplay = this.disableReviewDisplay.bind(this);
     this.toggleUserSection = this.toggleUserSection.bind(this);
     this.toggleFormSection = this.toggleFormSection.bind(this);
+    this.submitRating = this.submitRating.bind(this);
+    this.submitTag = this.submitTag.bind(this);
   }
 
   componentDidMount() {
@@ -99,7 +101,7 @@ export default class BatteryLog extends Component {
       });
     axios.get('/api/tags')
       .then(({data}) => {
-        // console.log(data);
+        console.log(data);
         this.setState({
           tags: data
         });
@@ -342,6 +344,14 @@ export default class BatteryLog extends Component {
    })
  }
 
+ submitRating() {
+
+ }
+
+ submitTag() {
+
+ }
+
   render() {
 
     return (
@@ -384,7 +394,83 @@ export default class BatteryLog extends Component {
           ?
           <div id="formSection" className="formContainer">
             <a href="#topOfPage"><Button id="formToggleButton" bsStyle="default" bsSize="small" onClick={() => {this.toggleFormSection()}}><Glyphicon glyph="chevron-up" /> <b>Review a Movie</b> <Glyphicon glyph="chevron-up" /></Button></a>
-            <h4> Add a Rating and/or Tag!</h4>
+            <Col>
+              <h4>Add a Rating</h4>
+
+              <Form horizontal>
+                <FormGroup controlId="formHorizontalEmail">
+                  <Col componentClass={ControlLabel} sm={2}>
+                    User ID
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl type="text" placeholder="Enter Your User ID" />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="formHorizontalPassword">
+                  <Col componentClass={ControlLabel} sm={2}>
+                    Movie ID
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl type="text" placeholder="Enter a Movie ID" />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="formHorizontalPassword">
+                  <Col componentClass={ControlLabel} sm={2}>
+                    Rating
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl type="text" placeholder="Enter a rating from 0 (worst) to 5 (best)" />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup>
+                  <Col smOffset={2} sm={10}>
+                    <Button type="submit" /*onClick={() => {this.submitTag()}}*/>Submit</Button>
+                  </Col>
+                </FormGroup>
+              </Form>
+            </Col>
+
+            <Col>
+              <h4>Add a Tag</h4>
+
+              <Form horizontal>
+                <FormGroup controlId="formHorizontalEmail">
+                  <Col componentClass={ControlLabel} sm={2}>
+                    User ID
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl type="text" placeholder="Enter Your User ID" />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="formHorizontalPassword">
+                  <Col componentClass={ControlLabel} sm={2}>
+                    Movie ID
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl type="text" placeholder="Enter a Movie ID" />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="formHorizontalPassword">
+                  <Col componentClass={ControlLabel} sm={2}>
+                    Tag
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl type="text" placeholder="Enter a tag" />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup>
+                  <Col smOffset={2} sm={10}>
+                    <Button type="submit" /*onClick={() => {this.submitRating()}}*/>Submit</Button>
+                  </Col>
+                </FormGroup>
+              </Form>
+            </Col>
           </div>
           : null
 
