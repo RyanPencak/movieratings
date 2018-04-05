@@ -27,6 +27,14 @@ export default class BatteryLog extends Component {
         Time: null
       },
 
+      postRatingWithTagData: {
+        RatingID: null,
+        UserID: null,
+        MovieID: null,
+        Rating: null,
+        Time: null
+      },
+
       postTagData: {
         TagID: null,
         RatingID: null,
@@ -49,7 +57,8 @@ export default class BatteryLog extends Component {
       viewMovieSize: 10,
       viewUserSize: 10,
 
-      displayForm: false,
+      displayRatingForm: false,
+      dispalyTagForm: false,
       displayUsers: false,
       displayReviews: false
     };
@@ -75,12 +84,19 @@ export default class BatteryLog extends Component {
     this.setUserViewSize = this.setUserViewSize.bind(this);
     this.disableReviewDisplay = this.disableReviewDisplay.bind(this);
     this.toggleUserSection = this.toggleUserSection.bind(this);
-    this.toggleFormSection = this.toggleFormSection.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.userIdChange = this.userIdChange.bind(this);
-    this.movieIdChange = this.movieIdChange.bind(this);
-    this.ratingChange = this.ratingChange.bind(this);
-    this.tagChange = this.tagChange.bind(this);
+    this.toggleRatingFormSection = this.toggleRatingFormSection.bind(this);
+    this.toggleTagFormSection = this.toggleTagFormSection.bind(this);
+    this.handleRatingSubmit = this.handleRatingSubmit.bind(this);
+    this.handleTagSubmit = this.handleTagSubmit.bind(this);
+    this.ratingUserIdChange = this.ratingUserIdChange.bind(this);
+    this.tagUserIdChange = this.tagUserIdChange.bind(this);
+    this.ratingMovieIdChange = this.ratingMovieIdChange.bind(this);
+    this.tagMovieIdChange = this.tagMovieIdChange.bind(this);
+    this.ratingRatingChange = this.ratingRatingChange.bind(this);
+    this.tagRatingChange = this.tagRatingChange.bind(this);
+    this.tagTagChange = this.tagTagChange.bind(this);
+    this.getRatingValidationState = this.getRatingValidationState.bind(this);
+    this.getRatingForTagValidationState = this.getRatingForTagValidationState.bind(this);
   }
 
   componentDidMount() {
@@ -357,13 +373,13 @@ export default class BatteryLog extends Component {
    })
  }
 
- toggleFormSection() {
+ toggleRatingFormSection() {
    this.setState({
-     displayForm: !this.state.displayForm
+     displayRatingForm: !this.state.displayRatingForm
    })
   }
 
-  handleSubmit(e) {
+  handleRatingSubmit(e) {
    e.preventDefault();
    if((this.state.postRatingData.Rating) < 0 || (this.state.postRatingData.Rating > 5)) {
      return(
@@ -372,7 +388,7 @@ export default class BatteryLog extends Component {
        </div>
      )
    }
-   else if(this.state.postRatingData.UserID === null || this.state.postRatingData.MovieID === null || this.state.postRatingData.Rating === null || this.state.postTagData.Tag === null) {
+   else if(this.state.postRatingData.UserID === null || this.state.postRatingData.MovieID === null || this.state.postRatingData.Rating === null) {
      return(
        <div className="error">
          <h4>All Fields Must Be Entered</h4>
@@ -390,17 +406,6 @@ export default class BatteryLog extends Component {
      })
      .catch(function (err) {
        console.log(err);
-     });
-     axios({
-       method: 'post',
-       url: '/api/tags',
-       data: this.state.postTagData
-     })
-     .then(function (res) {
-       console.log(res);
-     })
-     .catch(function (err) {
-       console.log(err);
      })
      .then(function (res) {
        window.location.reload();
@@ -408,7 +413,7 @@ export default class BatteryLog extends Component {
    }
   }
 
-  userIdChange(e) {
+  ratingUserIdChange(e) {
     this.setState({
       postRatingData: {
         RatingID: this.state.ratings.length+1,
@@ -418,18 +423,9 @@ export default class BatteryLog extends Component {
         Time: new Date().getTime()
       }
     });
-    this.setState({
-      postTagData: {
-        TagID: this.state.tags.length,
-        RatingID: this.state.ratings.length+1,
-        MovieID: this.state.postTagData.MovieID,
-        Tag: this.state.postTagData.Tag,
-        Time: new Date().getTime()
-      }
-    })
   }
 
-  movieIdChange(e) {
+  ratingMovieIdChange(e) {
     this.setState({
       postRatingData: {
         RatingID: this.state.ratings.length+1,
@@ -439,18 +435,9 @@ export default class BatteryLog extends Component {
         Time: new Date().getTime()
       }
     });
-    this.setState({
-      postTagData: {
-        TagID: this.state.tags.length,
-        RatingID: this.state.ratings.length+1,
-        MovieID: parseInt(e.target.value,10),
-        Tag: this.state.postTagData.Tag,
-        Time: new Date().getTime()
-      }
-    })
   }
 
-  ratingChange(e) {
+  ratingRatingChange(e) {
     this.setState({
       postRatingData: {
         RatingID: this.state.ratings.length+1,
@@ -462,17 +449,140 @@ export default class BatteryLog extends Component {
     });
   }
 
-  tagChange(e) {
+  toggleTagFormSection() {
     this.setState({
-      postTagData: {
-        TagID: this.state.tags.length,
-        RatingID: this.state.ratings.length+1,
-        MovieID: this.state.postRatingData.MovieID,
-        Tag: "\"" + e.target.value + "\"",
-        Time: new Date().getTime()
-      }
-    });
-  }
+      displayTagForm: !this.state.displayTagForm
+    })
+   }
+
+   handleTagSubmit(e) {
+    e.preventDefault();
+    if((this.state.postRatingWithTagData.Rating) < 0 || (this.state.postRatingWithTagData.Rating > 5)) {
+      return(
+        <div className="error">
+          <h4>Rating Must be Between 0 and 5</h4>
+        </div>
+      )
+    }
+    else if(this.state.postRatingWithTagData.UserID === null || this.state.postRatingWithTagData.MovieID === null || this.state.postRatingWithTagData.Rating === null || this.state.postRatingWithTagData.Tag === null) {
+      return(
+        <div className="error">
+          <h4>All Fields Must Be Entered</h4>
+        </div>
+      )
+    }
+    else {
+      axios({
+        method: 'post',
+        url: '/api/ratings',
+        data: this.state.postRatingWithTagData
+      })
+      .then(function (res) {
+        console.log(res);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+      axios({
+        method: 'post',
+        url: '/api/tags',
+        data: this.state.postTagData
+      })
+      .then(function (res) {
+        console.log(res);
+      })
+      .catch(function (err) {
+        console.log(err);
+      })
+      .then(function (res) {
+        window.location.reload();
+      });
+    }
+   }
+
+   tagUserIdChange(e) {
+     this.setState({
+       postRatingWithTagData: {
+         RatingID: this.state.ratings.length+1,
+         UserID: parseInt(e.target.value,10),
+         MovieID: this.state.postRatingWithTagData.MovieID,
+         Rating: this.state.postRatingWithTagData.Rating,
+         Time: new Date().getTime()
+       }
+     });
+     this.setState({
+       postTagData: {
+         TagID: this.state.tags.length+1,
+         RatingID: this.state.ratings.length+1,
+         MovieID: this.state.postTagData.MovieID,
+         Tag: this.state.postTagData.Tag,
+         Time: new Date().getTime()
+       }
+     })
+   }
+
+   tagMovieIdChange(e) {
+     this.setState({
+       postRatingWithTagData: {
+         RatingID: this.state.ratings.length+1,
+         UserID: this.state.postRatingWithTagData.UserID,
+         MovieID: parseInt(e.target.value,10),
+         Rating: this.state.postRatingWithTagData.Rating,
+         Time: new Date().getTime()
+       }
+     });
+     this.setState({
+       postTagData: {
+         TagID: this.state.tags.length+1,
+         RatingID: this.state.ratings.length+1,
+         MovieID: parseInt(e.target.value,10),
+         Tag: this.state.postTagData.Tag,
+         Time: new Date().getTime()
+       }
+     })
+   }
+
+   tagRatingChange(e) {
+     this.setState({
+       postRatingWithTagData: {
+         RatingID: this.state.ratings.length+1,
+         UserID: this.state.postRatingWithTagData.UserID,
+         MovieID: this.state.postRatingWithTagData.MovieID,
+         Rating: parseInt(e.target.value,10),
+         Time: new Date().getTime()
+       }
+     });
+   }
+
+   tagTagChange(e) {
+     this.setState({
+       postTagData: {
+         TagID: this.state.tags.length+1,
+         RatingID: this.state.ratings.length+1,
+         MovieID: this.state.postRatingWithTagData.MovieID,
+         Tag: "\"" + e.target.value + "\"",
+         Time: new Date().getTime()
+       }
+     });
+   }
+
+   getRatingValidationState() {
+     if((this.state.postRatingData.Rating < 0) || (this.state.postRatingData.Rating > 5)) {
+       return 'error';
+     }
+     else {
+       return null;
+     }
+   }
+
+   getRatingForTagValidationState() {
+     if((this.state.postRatingWithTagData.Rating < 0) || (this.state.postRatingWithTagData.Rating > 5)) {
+       return 'error';
+     }
+     else {
+       return null;
+     }
+   }
 
   render() {
 
@@ -502,25 +612,25 @@ export default class BatteryLog extends Component {
         </div>
 
         {
-          !this.state.displayForm
+          !this.state.displayRatingForm
           ?
           <div className="formDropdown">
-            <a href="#formSection"><Button id="formToggleButton" bsStyle="default" bsSize="small" onClick={() => {this.toggleFormSection()}}><Glyphicon glyph="chevron-down" /> <b>Review a Movie</b> <Glyphicon glyph="chevron-down" /></Button></a>
+            <a href="#formSection"><Button id="formToggleButton" bsStyle="default" bsSize="small" onClick={() => {this.toggleRatingFormSection()}}><Glyphicon glyph="chevron-down" /> <b>Add a Rating</b> <Glyphicon glyph="chevron-down" /></Button></a>
           </div>
           : null
 
         }
 
         {
-          this.state.displayForm
+          this.state.displayRatingForm
           ?
           <div id="formSection" className="formContainer">
-            <a href="#topOfPage"><Button id="formToggleButton" bsStyle="default" bsSize="small" onClick={() => {this.toggleFormSection()}}><Glyphicon glyph="chevron-up" /> <b>Review a Movie</b> <Glyphicon glyph="chevron-up" /></Button></a>
+            <a href="#topOfPage"><Button id="formToggleButton" bsStyle="default" bsSize="small" onClick={() => {this.toggleRatingFormSection()}}><Glyphicon glyph="chevron-up" /> <b>Exit Rating</b> <Glyphicon glyph="chevron-up" /></Button></a>
             <Col>
               <h4>Add a Rating</h4>
 
-              <Form onSubmit={this.handleSubmit} ref="form">
-                <FormGroup controlId="formHorizontalEmail" onChange={this.userIdChange}>
+              <Form onSubmit={this.handleRatingSubmit} ref="form">
+                <FormGroup controlId="formHorizontalEmail" onChange={this.ratingUserIdChange}>
                   <Col componentClass={ControlLabel} sm={2}>
                     User ID
                   </Col>
@@ -529,7 +639,7 @@ export default class BatteryLog extends Component {
                   </Col>
                 </FormGroup>
 
-                <FormGroup controlId="formHorizontalPassword" onChange={this.movieIdChange}>
+                <FormGroup controlId="formHorizontalPassword" onChange={this.ratingMovieIdChange}>
                   <Col componentClass={ControlLabel} sm={2}>
                     Movie ID
                   </Col>
@@ -538,7 +648,7 @@ export default class BatteryLog extends Component {
                   </Col>
                 </FormGroup>
 
-                <FormGroup controlId="formHorizontalPassword" onChange={this.ratingChange}>
+                <FormGroup controlId="formHorizontalPassword" onChange={this.ratingRatingChange} validationState={this.getRatingValidationState()}>
                   <Col componentClass={ControlLabel} sm={2}>
                     Rating
                   </Col>
@@ -547,7 +657,65 @@ export default class BatteryLog extends Component {
                   </Col>
                 </FormGroup>
 
-                <FormGroup controlId="formHorizontalPassword" onChange={this.tagChange}>
+                <FormGroup>
+                  <Col smOffset={2} sm={10}>
+                    <Button type="submit">Submit</Button>
+                  </Col>
+                </FormGroup>
+              </Form>
+            </Col>
+          </div>
+          : null
+
+        }
+
+        {
+          !this.state.dispalyTagForm
+          ?
+          <div className="formDropdown">
+            <a href="#formSection"><Button id="formToggleButton" bsStyle="default" bsSize="small" onClick={() => {this.toggleTagFormSection()}}><Glyphicon glyph="chevron-down" /> <b>Add a Tag</b> <Glyphicon glyph="chevron-down" /></Button></a>
+          </div>
+          : null
+
+        }
+
+        {
+          this.state.displayTagForm
+          ?
+          <div id="formSection" className="formContainer">
+            <a href="#topOfPage"><Button id="formToggleButton" bsStyle="default" bsSize="small" onClick={() => {this.toggleTagFormSection()}}><Glyphicon glyph="chevron-up" /> <b>Exit Tag</b> <Glyphicon glyph="chevron-up" /></Button></a>
+            <Col>
+              <h4>Add a Tag</h4>
+
+              <Form onSubmit={this.handleTagSubmit} ref="form">
+                <FormGroup controlId="formHorizontalEmail" onChange={this.tagUserIdChange}>
+                  <Col componentClass={ControlLabel} sm={2}>
+                    User ID
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl type="text" placeholder="Enter Your User ID" />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="formHorizontalPassword" onChange={this.tagMovieIdChange}>
+                  <Col componentClass={ControlLabel} sm={2}>
+                    Movie ID
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl type="text" placeholder="Enter a Movie ID" />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="formHorizontalPassword" onChange={this.tagRatingChange} validationState={this.getRatingForTagValidationState()}>
+                  <Col componentClass={ControlLabel} sm={2}>
+                    Rating
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl type="text" placeholder="Enter a rating from 0 (worst) to 5 (best)" />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="formHorizontalPassword" onChange={this.tagTagChange}>
                   <Col componentClass={ControlLabel} sm={2}>
                     Tag
                   </Col>
