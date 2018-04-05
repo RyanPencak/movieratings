@@ -19,6 +19,22 @@ export default class BatteryLog extends Component {
       selectedMovieRatings: [],
       selectedMovieTags: [],
 
+      postRatingData: {
+        RatingID: null,
+        UserID: null,
+        MovieID: null,
+        Rating: null,
+        Time: null
+      },
+
+      postTagData: {
+        TagID: null,
+        RatingID: null,
+        MovieID: null,
+        Tag: null,
+        Time: null
+      },
+
       movieTitleSearchTerm: '',
       movieGenreSearchTerm: '',
       userNameSearchTerm: '',
@@ -60,8 +76,11 @@ export default class BatteryLog extends Component {
     this.disableReviewDisplay = this.disableReviewDisplay.bind(this);
     this.toggleUserSection = this.toggleUserSection.bind(this);
     this.toggleFormSection = this.toggleFormSection.bind(this);
-    this.submitRating = this.submitRating.bind(this);
-    this.submitTag = this.submitTag.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.userIdChange = this.userIdChange.bind(this);
+    this.movieIdChange = this.movieIdChange.bind(this);
+    this.ratingChange = this.ratingChange.bind(this);
+    this.tagChange = this.tagChange.bind(this);
   }
 
   componentDidMount() {
@@ -342,15 +361,118 @@ export default class BatteryLog extends Component {
    this.setState({
      displayForm: !this.state.displayForm
    })
- }
+  }
 
- submitRating() {
+  handleSubmit(e) {
+   e.preventDefault();
+   if((this.state.postRatingData.Rating) < 0 || (this.state.postRatingData.Rating > 5)) {
+     return(
+       <div className="error">
+         <h4>Rating Must be Between 0 and 5</h4>
+       </div>
+     )
+   }
+   else if(this.state.postRatingData.UserID === null || this.state.postRatingData.MovieID === null || this.state.postRatingData.Rating === null || this.state.postTagData.Tag === null) {
+     return(
+       <div className="error">
+         <h4>All Fields Must Be Entered</h4>
+       </div>
+     )
+   }
+   else {
+     axios({
+       method: 'post',
+       url: '/api/ratings',
+       data: this.state.postRatingData
+     })
+     .then(function (res) {
+       console.log(res);
+     })
+     .catch(function (err) {
+       console.log(err);
+     });
+     axios({
+       method: 'post',
+       url: '/api/tags',
+       data: this.state.postTagData
+     })
+     .then(function (res) {
+       console.log(res);
+     })
+     .catch(function (err) {
+       console.log(err);
+     })
+     .then(function (res) {
+       window.location.reload();
+     });
+   }
+  }
 
- }
+  userIdChange(e) {
+    this.setState({
+      postRatingData: {
+        RatingID: this.state.ratings.length+1,
+        UserID: parseInt(e.target.value,10),
+        MovieID: this.state.postRatingData.MovieID,
+        Rating: this.state.postRatingData.Rating,
+        Time: new Date().getTime()
+      }
+    });
+    this.setState({
+      postTagData: {
+        TagID: this.state.tags.length,
+        RatingID: this.state.ratings.length+1,
+        MovieID: this.state.postTagData.MovieID,
+        Tag: this.state.postTagData.Tag,
+        Time: new Date().getTime()
+      }
+    })
+  }
 
- submitTag() {
+  movieIdChange(e) {
+    this.setState({
+      postRatingData: {
+        RatingID: this.state.ratings.length+1,
+        UserID: this.state.postRatingData.UserID,
+        MovieID: parseInt(e.target.value,10),
+        Rating: this.state.postRatingData.Rating,
+        Time: new Date().getTime()
+      }
+    });
+    this.setState({
+      postTagData: {
+        TagID: this.state.tags.length,
+        RatingID: this.state.ratings.length+1,
+        MovieID: parseInt(e.target.value,10),
+        Tag: this.state.postTagData.Tag,
+        Time: new Date().getTime()
+      }
+    })
+  }
 
- }
+  ratingChange(e) {
+    this.setState({
+      postRatingData: {
+        RatingID: this.state.ratings.length+1,
+        UserID: this.state.postRatingData.UserID,
+        MovieID: this.state.postRatingData.MovieID,
+        Rating: parseInt(e.target.value,10),
+        Time: new Date().getTime()
+      }
+    });
+  }
+
+  tagChange(e) {
+    this.setState({
+      postTagData: {
+        TagID: this.state.tags.length,
+        RatingID: this.state.ratings.length+1,
+        MovieID: this.state.postRatingData.MovieID,
+        Tag: "\"" + e.target.value + "\"",
+        Time: new Date().getTime()
+      }
+    });
+  }
 
   render() {
 
@@ -397,8 +519,8 @@ export default class BatteryLog extends Component {
             <Col>
               <h4>Add a Rating</h4>
 
-              <Form horizontal>
-                <FormGroup controlId="formHorizontalEmail">
+              <Form onSubmit={this.handleSubmit} ref="form">
+                <FormGroup controlId="formHorizontalEmail" onChange={this.userIdChange}>
                   <Col componentClass={ControlLabel} sm={2}>
                     User ID
                   </Col>
@@ -407,7 +529,7 @@ export default class BatteryLog extends Component {
                   </Col>
                 </FormGroup>
 
-                <FormGroup controlId="formHorizontalPassword">
+                <FormGroup controlId="formHorizontalPassword" onChange={this.movieIdChange}>
                   <Col componentClass={ControlLabel} sm={2}>
                     Movie ID
                   </Col>
@@ -416,7 +538,7 @@ export default class BatteryLog extends Component {
                   </Col>
                 </FormGroup>
 
-                <FormGroup controlId="formHorizontalPassword">
+                <FormGroup controlId="formHorizontalPassword" onChange={this.ratingChange}>
                   <Col componentClass={ControlLabel} sm={2}>
                     Rating
                   </Col>
@@ -425,37 +547,7 @@ export default class BatteryLog extends Component {
                   </Col>
                 </FormGroup>
 
-                <FormGroup>
-                  <Col smOffset={2} sm={10}>
-                    <Button type="submit" /*onClick={() => {this.submitTag()}}*/>Submit</Button>
-                  </Col>
-                </FormGroup>
-              </Form>
-            </Col>
-
-            <Col>
-              <h4>Add a Tag</h4>
-
-              <Form horizontal>
-                <FormGroup controlId="formHorizontalEmail">
-                  <Col componentClass={ControlLabel} sm={2}>
-                    User ID
-                  </Col>
-                  <Col sm={10}>
-                    <FormControl type="text" placeholder="Enter Your User ID" />
-                  </Col>
-                </FormGroup>
-
-                <FormGroup controlId="formHorizontalPassword">
-                  <Col componentClass={ControlLabel} sm={2}>
-                    Movie ID
-                  </Col>
-                  <Col sm={10}>
-                    <FormControl type="text" placeholder="Enter a Movie ID" />
-                  </Col>
-                </FormGroup>
-
-                <FormGroup controlId="formHorizontalPassword">
+                <FormGroup controlId="formHorizontalPassword" onChange={this.tagChange}>
                   <Col componentClass={ControlLabel} sm={2}>
                     Tag
                   </Col>
@@ -466,7 +558,7 @@ export default class BatteryLog extends Component {
 
                 <FormGroup>
                   <Col smOffset={2} sm={10}>
-                    <Button type="submit" /*onClick={() => {this.submitRating()}}*/>Submit</Button>
+                    <Button type="submit">Submit</Button>
                   </Col>
                 </FormGroup>
               </Form>

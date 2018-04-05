@@ -61,16 +61,29 @@ app.get('/api/movies', function(req, res){
   });
 });
 
-// app.post('/api/ratings', function(req, res){
-//   let sql = `SELECT DISTINCT rating_id as RatingID, user_id as UserID, movie_id as MovieID, rating as Rating FROM ratings`;
-//
-//   db.all(sql, [], (err, ratings) => {
-//     if (err) {
-//       throw err;
-//     }
-//     res.json(ratings);
-//   });
-// });
+app.post('/api/ratings', function(req, res){
+  let sql = `INSERT INTO ratings(rating_id, user_id, movie_id, rating, time_stamp) VALUES (${req.body.RatingID},${req.body.UserID},${req.body.MovieID},${req.body.Rating},${req.body.Time})`;
+  console.log(sql);
+  db.run(sql, function(err) {
+    if (err) {
+      throw err;
+    }
+  });
+  res.send('POST Request');
+  console.log('Posted');
+});
+
+app.post('/api/tags', function(req, res){
+  let sql = `INSERT INTO tags(tag_id, rating_id, movie_id, tag_string, time_stamp) VALUES (${req.body.TagID},${req.body.RatingID},${req.body.MovieID},${req.body.Tag.toString()},${req.body.Time})`;
+  console.log(sql);
+  db.run(sql, function(err) {
+    if (err) {
+      throw err;
+    }
+  });
+  res.send('POST Request');
+  console.log('Posted');
+});
 
 // app.post('/data', function(req, res){
 //     db.run("UPDATE counts SET value = value + 1 WHERE key = ?", "counter", function(err, row){
