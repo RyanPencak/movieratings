@@ -1,3 +1,32 @@
+# Web App Deployment
+
+Required Packages
+-------------------------------------------------------------------------------------
+
+1.	node and npm
+    * https://www.npmjs.com/get-npmnpm
+
+
+Download Web App Source Files
+-------------------------------------------------------------------------------------
+
+In Linux Terminal:
+1.	git clone git@github.com:RyanPencak/movieratings.git
+2.	cd movieratings
+
+
+Run Web App Locally
+-------------------------------------------------------------------------------------
+
+In Linux Terminal:
+1.	npm install
+2.	npm start
+
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+
+# React App Documentation
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
